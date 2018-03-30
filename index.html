@@ -1,1 +1,71 @@
 <!DOCTYPE html>
+<html lang="">
+
+<head>
+	<title>htmlGame</title>
+	<style>
+		canvas {
+			border: 1px solid black;
+			background: skyblue;
+		}
+
+		body {
+			margin: 0px;
+		}
+	</style>
+</head>
+
+<body onload="startGame()">
+	<script>
+		var myGamePiece;
+
+		function startGame() {
+
+			myGamePiece = new object(0, 0, "blue", 30, 30);
+			myGameArea.start();
+		}
+		//The object myGameArea will have more properties and methods
+		var myGameArea = {
+			canvas: document.createElement("canvas"),
+			start: function() {
+				//width is consider as x-axis and height as y-axis
+				// this referred as myGameArea
+				this.canvas.width = 800;
+				this.canvas.height = 400;
+				this.context = this
+					.canvas.getContext("2d");
+				document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+				this.interval = setInterval(updateGameArea, 20);
+			},
+			//it clears whole canvas
+			clear: function() {
+				this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+			}
+
+		}
+		// this object can be used as duplicate for another.
+		function object(x, y, color, width, height) {
+			//storing values of arguments in object function..
+			// this is refered as component
+			this.x = x;
+			this.y = y;
+			this.width = width;
+			this.height = height;
+			this.update = function() {
+				canvasobject = myGameArea.context;
+				canvasobject.fillStyle = color;
+				canvasobject.fillRect(this.x, this.y, this.width, this.height);
+			}
+		}
+		/*every function is called here,goes step by step  ,updateGameArea is called in myGameArea.interval and updateGameArea() function every 20th millisecond (50 times per second)*/
+		function updateGameArea() {
+			myGameArea.clear();
+			myGamePiece.x += 1;
+			myGamePiece.update();
+
+		}
+	</script>
+
+</body>
+
+</html>
