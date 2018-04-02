@@ -64,7 +64,7 @@
             this.height = height;
             this.speedX = 0;
             this.speedY = 0;
-            this.gravity = 0.5;
+            this.gravity = 1;
             this.gravitySpeed = 0;
             this.update = function() {
                 canvasobject = myGameArea.context;
@@ -72,31 +72,27 @@
                 canvasobject.fillRect(this.x, this.y, this.width, this.height);
             }
             this.newPos = function() {
-                //this.gravity += this.gravity;
+                this.gravitySpeed += this.gravity;
                 this.x += this.speedX;
-                this.y += this.speedY //+ this.gravity;
+                this.y += this.speedY + this.gravity;
                 this.rightCollision();
                 this.bottomCollision();
-                this.topCollision();
             }
             this.rightCollision = function() {
                 var collision = myGameArea.canvas.width - this.width;
                 if (this.x > collision) {
                     this.x = collision;
+                } else if (this.x < 0) {
+                    this.x = 0;
                 }
-                this.bottomCollision = function() {
-                    var collision = myGameArea.canvas.height - this.height;
-                    if (this.y > collision) {
-                        this.y = collision;
-                    } else if (this.y > collision) {
-                        this.y =collision;
-                    }
-                }
-                this.topCollision = function() {
-                    var collision = myGameArea.canvas.height - this.height;
-                    if (this.y > collision) {
+            }
+            this.bottomCollision = function() {
+                var collision = myGameArea.canvas.height - this.height;
+                if (this.y > collision) {
+                    this.y = collision;
 
-                    }
+                } else if (this.y < 0) {
+                    this.y = 0;
                 }
             }
             this.crashWith = function(otherobj) {
@@ -128,16 +124,16 @@
                 myGamePiece.speedX = 0;
                 myGamePiece.speedY = 0;
                 if ((myGameArea.keys && myGameArea.keys[65]) || (myGameArea.keys && myGameArea.keys[37])) {
-                    myGamePiece.speedX = -2;
+                    myGamePiece.speedX = -4;
                 }
                 if ((myGameArea.keys && myGameArea.keys[68]) || (myGameArea.keys && myGameArea.keys[39])) {
-                    myGamePiece.speedX = 2;
+                    myGamePiece.speedX = 4;
                 }
-                if ((myGameArea.keys && myGameArea.keys[87]) || (myGameArea.keys && myGameArea.keys[38])) {
-                    myGamePiece.speedY = -2;
+                if ((myGameArea.keys && myGameArea.keys[32]) || (myGameArea.keys && myGameArea.keys[38])) {
+                    myGamePiece.speedY = -4;
                 }
                 if ((myGameArea.keys && myGameArea.keys[83]) || (myGameArea.keys && myGameArea.keys[40])) {
-                    myGamePiece.speedY = 2;
+                    myGamePiece.speedY = 4;
                 }
                 myEnemy.x -= 5;
                 myGamePiece.newPos();
