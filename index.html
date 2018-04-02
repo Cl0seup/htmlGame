@@ -2,69 +2,111 @@
 <html lang="">
 
 <head>
-	<title>htmlGame</title>
-	<style>
-		canvas {
-			border: 1px solid black;
-			background: skyblue;
-		}
+    <title>htmlGame</title>
+    <style>
+        canvas {
+            border: 1px solid black;
+            background: skyblue;
+        }
 
-		body {
-			margin: 0px;
-		}
-	</style>
+        body {
+            margin: 0px;
+        }
+
+    </style>
 </head>
 
 <body onload="startGame()">
-	<script>
-		var myGamePiece;
+    <script>
+        var myGamePiece;
 
-		function startGame() {
+        function startGame() {
 
-			myGamePiece = new object(0, 0, "blue", 30, 30);
-			myGameArea.start();
-		}
-		//The object myGameArea will have more properties and methods
-		var myGameArea = {
-			canvas: document.createElement("canvas"),
-			start: function() {
-				//width is consider as x-axis and height as y-axis
-				// this referred as myGameArea
-				this.canvas.width = 800;
-				this.canvas.height = 400;
-				this.context = this
-					.canvas.getContext("2d");
-				document.body.insertBefore(this.canvas, document.body.childNodes[0]);
-				this.interval = setInterval(updateGameArea, 20);
-			},
-			//it clears whole canvas
-			clear: function() {
-				this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-			}
+            myGamePiece = new object(10, 20, "blue", 30, 30);
+            myGameArea.start();
+        }
+        //The object myGameArea will have more properties and methods
+        var myGameArea = {
+            canvas: document.createElement("canvas"),
+            start: function() {
+                //width is consider as x-axis and height as y-axis
+                // this referred as myGameArea
+                this.canvas.width = 800;
+                this.canvas.height = 400;
+                this.context = this
+                    .canvas.getContext("2d");
+                document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+                this.interval = setInterval(updateGameArea, 20);
+                window.addEventListener("keydown", function(e) {
+                    myGameArea.key = e.keyCode;
+                })
+                window.addEventListener("keyup", function(e) {
+                    myGameArea.key = false;
+                })
+            },
+            //it clears whole canvas
+            clear: function() {
+                this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            },
+            stop: function() {
+                clearInterval(this.interval);
+            }
+        }
+        // this object can be used as duplicate for another.
+        function object(x, y, color, width, height) {
+            //storing values of arguments in object function..
+            // this is refered as component
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
+            this.speedX = 0;
+            this.speedY = 0;
+            this.gravity = 0.05;
+            this.gravitySpeed = 0;
+            this.update = function() {
+                canvasobject = myGameArea.context;
+                canvasobject.fillStyle = color;
+                canvasobject.fillRect(this.x, this.y, this.width, this.height);
+            }
+            this.newPos = function() {
+                this.gravity += this.gravity;
+                this.x += this.speedX;
+                this.y += this.speedY + this.gravity;
+                this.bottomCollision();
 
-		}
-		// this object can be used as duplicate for another.
-		function object(x, y, color, width, height) {
-			//storing values of arguments in object function..
-			// this is refered as component
-			this.x = x;
-			this.y = y;
-			this.width = width;
-			this.height = height;
-			this.update = function() {
-				canvasobject = myGameArea.context;
-				canvasobject.fillStyle = color;
-				canvasobject.fillRect(this.x, this.y, this.width, this.height);
-			}
-		}
-		/*every function is called here,goes step by step  ,updateGameArea is called in myGameArea.interval and updateGameArea() function every 20th millisecond (50 times per second)*/
-		function updateGameArea() {
-			myGameArea.clear();
-			myGamePiece.x += 1;
-			myGamePiece.update();
+            }
+            this.bottomCollision = function() {
+                var ground = myGameArea.canvas.height - this.height;
+                if (this.y > ground) {
+                    this.y = ground;
+                }
+            }
+        }
+        /*every function is called here,goes step by step  ,updateGameArea is called in myGameArea.interval and updateGameArea() function every 20th millisecond (50 times per second)*/
+        function updateGameArea() {
+            myGameArea.clear();
+            myGamePiece.speedX = 0;
+            myGamePiece.speedY = 0;
+            if (myGameArea.key && myGameArea.key == 65) {
+                myGamePiece.speedX = -4;
+            }
+            if (myGameArea.key && myGameArea.key == 68) {
+                myGamePiece.speedX = 4;
+            }
+            if (myGameArea.key && myGameArea.key == 87) {
+                myGamePiece.speedY = -4;
+            }
+            if (myGameArea.key && myGameArea.key == 83) {
+                myGamePiece.speedY = 4;
+            }
 
-		}
-	</script>
+            myGamePiece.newPos();
+            myGamePiece.update();
+
+        }
+
+    </script>
 
 </body>
 
