@@ -10,19 +10,20 @@
         }
 
         body {
-            margin: 0px;
+            margin: 100px;
         }
-
     </style>
 </head>
 
 <body onload="startGame()">
     <script>
         var myGamePiece;
+        var myEnemy;
 
         function startGame() {
 
             myGamePiece = new object(10, 20, "blue", 30, 30);
+            myEnemy = new object(650, 280, "red", 100, 10);
             myGameArea.start();
         }
         //The object myGameArea will have more properties and methods
@@ -32,7 +33,7 @@
                 //width is consider as x-axis and height as y-axis
                 // this referred as myGameArea
                 this.canvas.width = 800;
-                this.canvas.height = 400;
+                this.canvas.height = 300;
                 this.context = this
                     .canvas.getContext("2d");
                 document.body.insertBefore(this.canvas, document.body.childNodes[0]);
@@ -82,30 +83,53 @@
                     this.y = ground;
                 }
             }
+            this.crashWith = function(otherobj) {
+                var myleft = this.x;
+                var myright = this.x + (this.width);
+                var mytop = this.y;
+                var mybottom = this.y + (this.height);
+                var otherleft = otherobj.x;
+                var otherright = otherobj.x + (otherobj.width);
+                var othertop = otherobj.y;
+                var otherbottom = otherobj.y + (otherobj.height);
+                var crash = true;
+                if ((mybottom < othertop) ||
+                    (mytop > otherbottom) ||
+                    (myright < otherleft) ||
+                    (myleft > otherright)) {
+                    crash = false;
+                }
+                return crash;
+            }
         }
+
         /*every function is called here,goes step by step  ,updateGameArea is called in myGameArea.interval and updateGameArea() function every 20th millisecond (50 times per second)*/
         function updateGameArea() {
-            myGameArea.clear();
-            myGamePiece.speedX = 0;
-            myGamePiece.speedY = 0;
-            if (myGameArea.key && myGameArea.key == 65) {
-                myGamePiece.speedX = -4;
+            if (myGamePiece.crashWith(myEnemy)) {
+                myGameArea.stop();
+            } else {
+                myGameArea.clear();
+                myGamePiece.speedX = 0;
+                myGamePiece.speedY = 0;
+                if (myGameArea.key && myGameArea.key == 65) {
+                    myGamePiece.speedX = -4;
+                }
+                if (myGameArea.key && myGameArea.key == 68) {
+                    myGamePiece.speedX = 4;
+                }
+                if (myGameArea.key && myGameArea.key == 87) {
+                    myGamePiece.speedY = -4;
+                }
+                if (myGameArea.key && myGameArea.key == 83) {
+                    myGamePiece.speedY = 4;
+                }
+                myEnemy.x -= 5;
+                myGamePiece.newPos();
+                myGamePiece.update();
+                myEnemy.update();
             }
-            if (myGameArea.key && myGameArea.key == 68) {
-                myGamePiece.speedX = 4;
-            }
-            if (myGameArea.key && myGameArea.key == 87) {
-                myGamePiece.speedY = -4;
-            }
-            if (myGameArea.key && myGameArea.key == 83) {
-                myGamePiece.speedY = 4;
-            }
-
-            myGamePiece.newPos();
-            myGamePiece.update();
 
         }
-
     </script>
 
 </body>
