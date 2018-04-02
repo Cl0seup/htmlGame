@@ -39,10 +39,11 @@
                 document.body.insertBefore(this.canvas, document.body.childNodes[0]);
                 this.interval = setInterval(updateGameArea, 20);
                 window.addEventListener("keydown", function(e) {
-                    myGameArea.key = e.keyCode;
+                    myGameArea.keys = (myGameArea.keys || []);
+                    myGameArea.keys[e.keyCode] = true;
                 })
                 window.addEventListener("keyup", function(e) {
-                    myGameArea.key = false;
+                    myGameArea.keys[e.keyCode] = false
                 })
             },
             //it clears whole canvas
@@ -63,7 +64,7 @@
             this.height = height;
             this.speedX = 0;
             this.speedY = 0;
-            this.gravity = 0.05;
+            this.gravity = 0.5;
             this.gravitySpeed = 0;
             this.update = function() {
                 canvasobject = myGameArea.context;
@@ -71,16 +72,31 @@
                 canvasobject.fillRect(this.x, this.y, this.width, this.height);
             }
             this.newPos = function() {
-                this.gravity += this.gravity;
+                //this.gravity += this.gravity;
                 this.x += this.speedX;
-                this.y += this.speedY + this.gravity;
+                this.y += this.speedY //+ this.gravity;
+                this.rightCollision();
                 this.bottomCollision();
-
+                this.topCollision();
             }
-            this.bottomCollision = function() {
-                var ground = myGameArea.canvas.height - this.height;
-                if (this.y > ground) {
-                    this.y = ground;
+            this.rightCollision = function() {
+                var collision = myGameArea.canvas.width - this.width;
+                if (this.x > collision) {
+                    this.x = collision;
+                }
+                this.bottomCollision = function() {
+                    var collision = myGameArea.canvas.height - this.height;
+                    if (this.y > collision) {
+                        this.y = collision;
+                    } else if (this.y > collision) {
+                        this.y =collision;
+                    }
+                }
+                this.topCollision = function() {
+                    var collision = myGameArea.canvas.height - this.height;
+                    if (this.y > collision) {
+
+                    }
                 }
             }
             this.crashWith = function(otherobj) {
@@ -111,17 +127,17 @@
                 myGameArea.clear();
                 myGamePiece.speedX = 0;
                 myGamePiece.speedY = 0;
-                if (myGameArea.key && myGameArea.key == 65) {
-                    myGamePiece.speedX = -4;
+                if ((myGameArea.keys && myGameArea.keys[65]) || (myGameArea.keys && myGameArea.keys[37])) {
+                    myGamePiece.speedX = -2;
                 }
-                if (myGameArea.key && myGameArea.key == 68) {
-                    myGamePiece.speedX = 4;
+                if ((myGameArea.keys && myGameArea.keys[68]) || (myGameArea.keys && myGameArea.keys[39])) {
+                    myGamePiece.speedX = 2;
                 }
-                if (myGameArea.key && myGameArea.key == 87) {
-                    myGamePiece.speedY = -4;
+                if ((myGameArea.keys && myGameArea.keys[87]) || (myGameArea.keys && myGameArea.keys[38])) {
+                    myGamePiece.speedY = -2;
                 }
-                if (myGameArea.key && myGameArea.key == 83) {
-                    myGamePiece.speedY = 4;
+                if ((myGameArea.keys && myGameArea.keys[83]) || (myGameArea.keys && myGameArea.keys[40])) {
+                    myGamePiece.speedY = 2;
                 }
                 myEnemy.x -= 5;
                 myGamePiece.newPos();
