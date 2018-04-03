@@ -2,164 +2,165 @@
 <html lang="">
 
 <head>
-	<title>htmlGame</title>
-	<style>
-		canvas {
-			border: 1px solid black;
-			background: skyblue;
-		}
+    <title>htmlGame</title>
+    <style>
+        canvas {
+            border: 1px solid black;
+            background: skyblue;
+        }
 
-		body {
-			margin: 100px;
-		}
-	</style>
+        body {
+            margin: 100px;
+        }
+    </style>
 </head>
 
 <body onload="startGame()">
-	<script>
-		var myGamePiece;
-		var myEnemy = [];
+    <script>
+        var myGamePiece;
+        var myEnemy = [];
 
-		function startGame() {
-			myGamePiece = new object(10, 300, "blue", 30, 30);
-			myGameArea.start();
-		}
-		//The object myGameArea will have more properties and methods
-		var myGameArea = {
-			canvas: document.createElement("canvas"),
-			start: function() {
-				//width is consider as x-axis and height as y-axis
-				// this referred as myGameArea
-				this.canvas.width = 800;
-				this.canvas.height = 300;
-				this.context = this.canvas.getContext("2d");
-				document.body.insertBefore(this.canvas, document.body.childNodes[0]);
-				this.frameNo = 0;
-				this.interval = setInterval(updateGameArea, 20);
-				window.addEventListener("keydown", function(e) {
-					myGameArea.keys = (myGameArea.keys || []);
-					myGameArea.keys[e.keyCode] = true;
-				})
-				window.addEventListener("keyup", function(e) {
-					myGameArea.keys[e.keyCode] = false
-				})
-			},
-			//it clears whole canvas
-			clear: function() {
-				this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-			},
-			stop: function() {
-				clearInterval(this.interval);
-			}
-		}
+        function startGame() {
+            myGamePiece = new object(10, 100, "blue", 30, 30);
+            myGameArea.start();
+        }
+        //The object myGameArea will have more properties and methods
+        var myGameArea = {
+            canvas: document.createElement("canvas"),
+            start: function() {
+                //width is consider as x-axis and height as y-axis
+                // this referred as myGameArea
+                this.canvas.width = 800;
+                this.canvas.height = 300;
+                this.context = this.canvas.getContext("2d");
+                document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+                this.frameNo = 0;
+                this.interval = setInterval(updateGameArea, 20);
+                window.addEventListener("keydown", function(e) {
+                    myGameArea.keys = (myGameArea.keys || []);
+                    myGameArea.keys[e.keyCode] = true;
+                })
+                window.addEventListener("keyup", function(e) {
+                    myGameArea.keys[e.keyCode] = false
+                })
+            },
+            //it clears whole canvas
+            clear: function() {
+                this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            },
+            stop: function() {
+                clearInterval(this.interval);
+            }
+        }
 
-		function everyinterval(n) {
-			if ((myGameArea.frameNo / n % 1 == 0)) {
-				return true;
-			}
-			return false;
-		}
-		// this object can be used as duplicate for another.
-		function object(x, y, color, width, height) {
-			//storing values of arguments in object function..
-			// this is refered as component
-			this.x = x;
-			this.y = y;
-			this.width = width;
-			this.height = height;
-			this.speedX = 0;
-			this.speedY = 0;
-			this.gravity = 1;
-			this.gravitySpeed = 0;
-			this.update = function() {
-				canvasobject = myGameArea.context;
-				canvasobject.fillStyle = color;
-				canvasobject.fillRect(this.x, this.y, this.width, this.height);
-			}
-			this.newPos = function() {
-				this.gravitySpeed += this.gravity;
-				this.x += this.speedX;
-				this.y += this.speedY + this.gravity;
-				this.rightCollision();
-				this.bottomCollision();
-			}
-			this.rightCollision = function() {
-				var collision = myGameArea.canvas.width - this.width;
-				if (this.x > collision) {
-					this.x = collision;
-				} else if (this.x < 0) {
-					this.x = 0;
-				}
-			}
-			this.bottomCollision = function() {
-				var collision = myGameArea.canvas.height - this.height;
-				if (this.y > collision) {
-					this.y = collision;
+        function everyinterval(n) {
+            if ((myGameArea.frameNo / n % 1 == 0)) {
+                return true;
+            }
+            return false;
+        }
+        // this object can be used as duplicate for another.
+        function object(x, y, color, width, height) {
+            //storing values of arguments in object function..
+            // this is refered as component
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
+            this.speedX = 0;
+            this.speedY = 0;
+            this.gravity = 1;
+            this.gravitySpeed = 0;
+            this.update = function() {
+                canvasobject = myGameArea.context;
+                canvasobject.fillStyle = color;
+                canvasobject.fillRect(this.x, this.y, this.width, this.height);
+            }
+            this.newPos = function() {
+                this.gravitySpeed += this.gravity;
+                this.x += this.speedX;
+                this.y += this.speedY + this.gravity;
+                this.rightCollision();
+                this.bottomCollision();
+            }
+            this.rightCollision = function() {
+                var collision = myGameArea.canvas.width - this.width;
+                if (this.x > collision) {
+                    this.x = collision;
+                } else if (this.x < 0) {
+                    this.x = 0;
+                }
+            }
+            this.bottomCollision = function() {
+                var collision = myGameArea.canvas.height - this.height;
+                if (this.y > collision) {
+                    this.y = collision;
 
-				} else if (this.y < 0) {
-					this.y = 0;
-				}
-			}
-			this.crashWith = function(otherobj) {
-				var myleft = this.x;
-				var myright = this.x + (this.width);
-				var mytop = this.y;
-				var mybottom = this.y + (this.height);
-				var otherleft = otherobj.x;
-				var otherright = otherobj.x + (otherobj.width);
-				var othertop = otherobj.y;
-				var otherbottom = otherobj.y + (otherobj.height);
-				var crash = true;
-				if ((mybottom < othertop) ||
-					(mytop > otherbottom) ||
-					(myright < otherleft) ||
-					(myleft > otherright)) {
-					crash = false;
-				}
-				return crash;
-			}
-		}
+                } else if (this.y < 0) {
+                    this.y = 0;
+                }
+            }
+            this.crashWith = function(otherobj) {
+                var myleft = this.x;
+                var myright = this.x + (this.width);
+                var mytop = this.y;
+                var mybottom = this.y + (this.height);
+                var otherleft = otherobj.x;
+                var otherright = otherobj.x + (otherobj.width);
+                var othertop = otherobj.y;
+                var otherbottom = otherobj.y + (otherobj.height);
+                var crash = true;
+                if ((mybottom < othertop) ||
+                    (mytop > otherbottom) ||
+                    (myright < otherleft) ||
+                    (myleft > otherright)) {
+                    crash = false;
+                }
+                return crash;
+            }
+        }
 
-		/*every function is called here,goes step by step  ,updateGameArea is called in myGameArea.interval and updateGameArea() function every 20th millisecond (50 times per second)*/
-		function updateGameArea() {
-			var x, y;
-			for (i = 0; i < myEnemy.length; i++) {
-				if (myGamePiece.crashWith(myEnemy[i])) {
-					myGameArea.stop();
-					return;
-				}
-			}
+        /*every function is called here,goes step by step  ,updateGameArea is called in myGameArea.interval and updateGameArea() function every 20th millisecond (50 times per second)*/
+        function updateGameArea() {
+            var x, y;
+            for (i = 0; i < myEnemy.length; i++) {
+                if (myGamePiece.crashWith(myEnemy[i])) {
+                    myGameArea.stop();
+                    return;
+                }
+            }
 
-			myGameArea.clear();
-			myGamePiece.speedX = 0;
-			myGamePiece.speedY = 0;
-			if ((myGameArea.keys && myGameArea.keys[65]) || (myGameArea.keys && myGameArea.keys[37])) {
-				myGamePiece.speedX = -4;
-			}
-			if ((myGameArea.keys && myGameArea.keys[68]) || (myGameArea.keys && myGameArea.keys[39])) {
-				myGamePiece.speedX = 4;
-			}
-			if ((myGameArea.keys && myGameArea.keys[32]) || (myGameArea.keys && myGameArea.keys[38])) {
-				myGamePiece.speedY = -4;
-			}
-			if ((myGameArea.keys && myGameArea.keys[83]) || (myGameArea.keys && myGameArea.keys[40])) {
-				wd
-				myGamePiece.speedY = 4;
-			}
-			myGameArea.frameNo += 1;
-			if (myGameArea.frameNo == 1 || everyinterval(150)) {
-				x = myGameArea.canvas.width;
-				y = myGameArea.canvas.height - 200;
-				myEnemy.push(new object(10, 10, "red", x, y));
-			}
-			for (i = 0; i < myEnemy.length; i += 1) {
-				myEnemy[i].x += -1;
-				myEnemy[i].update();
-			}
-			myGamePiece.newPos();
-			myGamePiece.update();
-		}
-	</script>
+            myGameArea.clear();
+            myGamePiece.speedX = 0;
+            myGamePiece.speedY = 0;
+            if ((myGameArea.keys && myGameArea.keys[65]) || (myGameArea.keys && myGameArea.keys[37])) {
+                myGamePiece.speedX = -4;
+            }
+            if ((myGameArea.keys && myGameArea.keys[68]) || (myGameArea.keys && myGameArea.keys[39])) {
+                myGamePiece.speedX = 4;
+            }
+            if ((myGameArea.keys && myGameArea.keys[32]) || (myGameArea.keys && myGameArea.keys[38])) {
+                myGamePiece.speedY = -4;
+            }
+
+            if ((myGameArea.keys && myGameArea.keys[83]) || (myGameArea.keys && myGameArea.keys[40])) {
+                myGamePiece.speedY = 4;
+            
+            }
+            myGameArea.frameNo += 1;
+            if (myGameArea.frameNo == 1 || everyinterval(150)) {
+                x = myGameArea.canvas.width;
+                y = myGameArea.canvas.height - 100;
+                myEnemy.push(new object(x, y, "red", 10, 150));
+            }
+            for (i = 0; i < myEnemy.length; i += 1) {
+                myEnemy[i].x += -1;
+                myEnemy[i].update();
+            }
+            myGamePiece.newPos();
+            myGamePiece.update();
+        }
+    </script>
 
 </body>
 
