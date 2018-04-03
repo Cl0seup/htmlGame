@@ -18,12 +18,10 @@
 <body onload="startGame()">
 	<script>
 		var myGamePiece;
-		var myEnemy;
+		var myEnemy = [];
 
 		function startGame() {
-
 			myGamePiece = new object(10, 300, "blue", 30, 30);
-			myEnemy = new object(650, 280, "red", 100, 10);
 			myGameArea.start();
 		}
 		//The object myGameArea will have more properties and methods
@@ -36,6 +34,7 @@
 				this.canvas.height = 300;
 				this.context = this.canvas.getContext("2d");
 				document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+				this.frameNo = 0;
 				this.interval = setInterval(updateGameArea, 20);
 				window.addEventListener("keydown", function(e) {
 					myGameArea.keys = (myGameArea.keys || []);
@@ -52,6 +51,13 @@
 			stop: function() {
 				clearInterval(this.interval);
 			}
+		}
+
+		function everyinterval(n) {
+			if ((myGameArea.frameNo / n % 1 == 0)) {
+				return true;
+			}
+			return false;
 		}
 		// this object can be used as duplicate for another.
 		function object(x, y, color, width, height) {
@@ -116,30 +122,42 @@
 
 		/*every function is called here,goes step by step  ,updateGameArea is called in myGameArea.interval and updateGameArea() function every 20th millisecond (50 times per second)*/
 		function updateGameArea() {
-			if (myGamePiece.crashWith(myEnemy)) {
-				myGameArea.stop();
-			} else {
-				myGameArea.clear();
-				myGamePiece.speedX = 0;
-				myGamePiece.speedY = 0;
-				if ((myGameArea.keys && myGameArea.keys[65]) || (myGameArea.keys && myGameArea.keys[37])) {
-					myGamePiece.speedX = -4;
+			var x, y;
+			for (i = 0; i < myEnemy.length; i++) {
+				if (myGamePiece.crashWith(myEnemy[i])) {
+					myGameArea.stop();
+					return;
 				}
-				if ((myGameArea.keys && myGameArea.keys[68]) || (myGameArea.keys && myGameArea.keys[39])) {
-					myGamePiece.speedX = 4;
-				}
-				if ((myGameArea.keys && myGameArea.keys[32]) || (myGameArea.keys && myGameArea.keys[38])) {
-					myGamePiece.speedY = -4;
-				}
-				if ((myGameArea.keys && myGameArea.keys[83]) || (myGameArea.keys && myGameArea.keys[40])) {
-					myGamePiece.speedY = 4;
-				}
-				myEnemy.x -= 2;
-				myGamePiece.newPos();
-				myGamePiece.update();
-				myEnemy.update();
 			}
 
+			myGameArea.clear();
+			myGamePiece.speedX = 0;
+			myGamePiece.speedY = 0;
+			if ((myGameArea.keys && myGameArea.keys[65]) || (myGameArea.keys && myGameArea.keys[37])) {
+				myGamePiece.speedX = -4;
+			}
+			if ((myGameArea.keys && myGameArea.keys[68]) || (myGameArea.keys && myGameArea.keys[39])) {
+				myGamePiece.speedX = 4;
+			}
+			if ((myGameArea.keys && myGameArea.keys[32]) || (myGameArea.keys && myGameArea.keys[38])) {
+				myGamePiece.speedY = -4;
+			}
+			if ((myGameArea.keys && myGameArea.keys[83]) || (myGameArea.keys && myGameArea.keys[40])) {
+				wd
+				myGamePiece.speedY = 4;
+			}
+			myGameArea.frameNo += 1;
+			if (myGameArea.frameNo == 1 || everyinterval(150)) {
+				x = myGameArea.canvas.width;
+				y = myGameArea.canvas.height - 200;
+				myEnemy.push(new object(10, 10, "red", x, y));
+			}
+			for (i = 0; i < myEnemy.length; i += 1) {
+				myEnemy[i].x += -1;
+				myEnemy[i].update();
+			}
+			myGamePiece.newPos();
+			myGamePiece.update();
 		}
 	</script>
 
