@@ -19,9 +19,11 @@
     <script>
         var myGamePiece;
         var myEnemy = [];
+        var myBackground;
 
         function startGame() {
             myGamePiece = new object(10, 100, "blue", 30, 30);
+            myBackground = new object(0, 0, "D:\htmlGame\images", 800, 300);
             myGameArea.start();
         }
         //The object myGameArea will have more properties and methods
@@ -60,16 +62,21 @@
             return false;
         }
         // this object can be used as duplicate for another.
-        function object(x, y, color, width, height) {
+        function object(x, y, color, width, height, type) {
             //storing values of arguments in object function..
             // this is refered as component
+            this.type = type;
+            if (this.type == "image") {
+                this.image = new Image();
+                this.image.src = color;
+            }
             this.x = x;
             this.y = y;
             this.width = width;
             this.height = height;
             this.speedX = 0;
             this.speedY = 0;
-            this.gravity = 1;
+            this.gravity = 2;
             this.gravitySpeed = 0;
             this.update = function() {
                 canvasobject = myGameArea.context;
@@ -150,7 +157,7 @@
             if (myGameArea.frameNo == 1 || everyinterval(150)) {
                 x = myGameArea.canvas.width;
                 minHeight = 10;
-                maxHeight = 20;
+                maxHeight = 2;
                 height = Math.floor(Math.random() * (maxHeight - minHeight + 1) + minHeight);
                 minGap = 50;
                 maxGap = 200;
